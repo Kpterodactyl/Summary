@@ -1,0 +1,33 @@
+{
+    "name": "habit",
+    "description": "App description...",
+    "license": "proprietary",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Jia Huang",
+            "email": "iamfat@gmail.com"
+        }
+    ],
+    "bin": [
+        "bin/gini"
+    ],
+    "require": {
+        "sabre/dav": "2.*",
+        "doctrine/inflector": "@stable"
+    },
+    "require-dev": {
+        "linkorb/jsmin-php": "1.*",
+        "natxet/CssMin": "3.*",
+        "henrikbjorn/lurker": "1.*"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://satis.genee.cn"
+        },
+        {
+            "packagist": false
+        }
+    ]
+}
