@@ -2,7 +2,7 @@
  
 namespace Gini\Controller\CGI;
 
-class Summary extends Layout\Navbar
+class Summary extends Layout
 {
 	function actionSummary() {
 		$db = \Gini\Database::db();
