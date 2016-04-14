@@ -19,7 +19,7 @@
 		<img src="assets/img/logo.png" style="padding-top:30px;">
 		</div>
 		<div class="col-xs-7">
-			<p style="color:black;font-size:42px;padding-top:22px;">Lims站点行为监测</p>
+			<p style="color:black;font-size:42px;padding-top:22px;"><?php echo H(T("Lims站点行为监测"))?></p>
 		</div>
 		</div>
     </div>
@@ -30,8 +30,9 @@
 	        	<li><a href="/Summary/#section-2">访客属性</a></li>
 	        	<li><a href="/Summary/#section-3">访客身份</a></li>
                 <li><a href="/Summary/#section-4">操作系统统计</a></li>
-	        	<li><a href="/Summary/#section-5">模块访问分析</a></li>
-	        	<li><a href="/Summary/#section-6">访问行为分析</a></li>
+                <li><a href="/Summary/#section-5">退出习惯统计</a></li>
+	        	<li><a href="/Summary/#section-6">模块访问分析</a></li>
+	        	<li><a href="/Summary/#section-7">访问行为分析</a></li>
 			</ul>
 		</div>
     	<div class="col-xs-10">
@@ -143,11 +144,33 @@
                 <div class="col-xs-6"  id="pie3" style="height: 400px;"></div>
 				<div class="col-xs-6"  id="charts2" style="height:400px"></div>
 			</div>
-		    <div id="section-5">
+			<div id="section-5">
+			<h3><b>退出习惯</b></h3>
+            	<table class="table">
+					<tr style="background-color:  #CCEEFF;font: '微软雅黑';">
+						<th>退出方式</th>
+						<th>次数</th>
+						<th>所占比例</th>
+					</tr>
+					<tr>
+						<td>手 动</td>
+						<td><?=H($manual_num)?></td>
+						<td><?=H($manual_scale)?></td>
+						
+					</tr>
+					<tr>
+						<td>自 动</td>
+						<td><?=H($auto_num)?></td>
+						<td><?=H($auto_scale)?></td>
+					</tr>
+				</table>
+			</div>
+
+		    <div id="section-6">
 			<h3><b>模块访问分析</b></h3>
                 <div id="line2" style="height:400px"></div><hr>
 			</div>
-			 <div id="section-6">
+			 <div id="section-7">
 			<h3><b>访问行为分析</b></h3>
                 <div id="line3" style="height:400px"></div><hr>
 			</div>
@@ -226,7 +249,7 @@ require(['main'],function($){
 require(['main'], function($) {
 	require(['echarts'], function (ec) {
 		//line是关于每日访问量的
-		var myLineChart = ec.init(document.getElementById('line'));
+		var SummaryChart = ec.init(document.getElementById('line'));
 		//pie3 charts2是关于用户操作系统的
 		var countBrowserChart = ec.init(document.getElementById('pie3'));
 		var browserPie = ec.init(document.getElementById('charts2'));
@@ -263,7 +286,6 @@ require(['main'], function($) {
 				            name: '访问来源',
 				            type: 'pie',
 				            radius : '70%',
-				            roseType: 'angle',
 				            center: ['50%', '60%'],
 				            data:[
 				            	{value:data[1],name:"Window"},
@@ -325,7 +347,7 @@ require(['main'], function($) {
 					$(data).each(function(index, val){
 					visit_time.push(val[0]);
 			    	visit_count.push(val[1]);	
-			    		myLineChart.setOption({
+			    		SummaryChart.setOption({
 						    title : {
 		        				text: '访问量数据概况',
 		        				
