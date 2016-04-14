@@ -5,7 +5,6 @@ namespace Gini\Controller\API;
 class Summary extends \Gini\Controller\API{
 
 	public function actionPoint($point_data){
-		error_log("+++++++++++++++++");
 		if(!is_array($point_data)){
 			throw \Gini\IoC::construct('\Gini\API\Exception', '异常参数传入', 1001);
 		}
@@ -34,7 +33,7 @@ class Summary extends \Gini\Controller\API{
 			$point->browser = $point_data['browser'];
 			$point->version = $point_data['version'];
 			$point->signout_way = $point_data['signout_way'];
-			$point->OS_type = $point_data['OS_type'];
+			$point->os = $point_data['OS_type'];
 			$point->dtstart = date("Y-m-d H:i:s",$point_data['dtstart']);
 			$point->dtend = date("Y-m-d H:i:s",$point_data['dtend']);
 			$point->keeptime = $point_data['keeptime'];
@@ -46,8 +45,6 @@ class Summary extends \Gini\Controller\API{
 	}
 
 	public function actionAction($action_data) {
-		error_log("=========================");
-		error_log(print_r($action_data,true));
 		if(!array($action_data)){
 			throw \Gini\IoC::construct('\Gini\API\Exception', '异常参数传入', 1001);
 		}

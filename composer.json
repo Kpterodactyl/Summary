@@ -1,5 +1,10 @@
 {
-    "name": "habit",
+    "require": {
+	"jenssegers/agent": "2.*",
+        "sabre/dav": "2.*",
+        "doctrine/inflector": "@stable"
+    },
+    "name": "summary",
     "description": "App description...",
     "license": "proprietary",
     "type": "library",
@@ -12,10 +17,6 @@
     "bin": [
         "bin/gini"
     ],
-    "require": {
-        "sabre/dav": "2.*",
-        "doctrine/inflector": "@stable"
-    },
     "require-dev": {
         "linkorb/jsmin-php": "1.*",
         "natxet/CssMin": "3.*",
@@ -24,10 +25,10 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "http://satis.genee.cn"
+            "url": "https://packagist.phpcomposer.com"
         },
-        {
-            "packagist": false
-        }
+	{
+	    "packagist":false
+	}
     ]
 }
