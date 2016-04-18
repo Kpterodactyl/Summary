@@ -1,41 +1,68 @@
-/* Custom Styles */
-ul.nav-tabs{
-	width: 140px;
-	margin-top: 20px;
-	border-radius: 4px;
-	border: 1px solid #ddd;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+.sidebar-menu {
+    position: fixed;
+    float: left;
+    width: 160px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #052963;
+    color: #FFFFFF;
+    z-index: 999;
 }
-ul.nav-tabs li{
-	margin: 0;
-	border-top: 1px solid #ddd;
+.maincontent {
+    float: right;
+    width: 86%;
 }
-ul.nav-tabs li:first-child{
-	border-top: none;
+.menu {
+    text-align: left;
 }
-ul.nav-tabs li a{
-	margin: 0;
-	padding: 8px 16px;
-	border-radius: 0;
+#menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: #FFFFFF;
 }
-ul.nav-tabs li.active a, ul.nav-tabs li.active a:hover{
-	color: #fff;
-	background: #0088cc;
-	border: 1px solid #0088cc;
+#menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+    margin-top: 60px;
+    color: #FFFFFF;
+
 }
-ul.nav-tabs li:first-child a{
-	border-radius: 4px 4px 0 0;
+#menu li  .active a {
+    font-style: normal;
+    font-weight: 400;
+    position: relative;
+    display: block;
+    padding: 13px 20px;
+    color: #fff;
+    white-space: nowrap;
+    z-index: 2;
+    background-color: #021F4E;
+    font-size: 0.9em;
+    font-family: 'Roboto', sans-serif;
+    border: none;
+    border-left: 4px solid #021F4E;
 }
-ul.nav-tabs li:last-child a{
-	border-radius: 0 0 4px 4px;
-}
-ul.nav-tabs.affix{
-	top: 30px; /* Set the top position of pinned element */
+#menu li a {
+    font-style: normal;
+    font-weight: 400;
+    position: relative;
+    display: block;
+    padding: 13px 20px;
+    color: #fff;
+    white-space: nowrap;
+    z-index: 2;
+    background-color: #052963;
+    font-size: 0.9em;
+    font-family: 'Roboto', sans-serif;
 }
 .logo{
 	padding-top:25px;
 	padding-bottom: 25px;
 }
 .date_picker{
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
