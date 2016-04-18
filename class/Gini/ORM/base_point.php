@@ -18,6 +18,8 @@ class base_point extends Object
 	public $browser = "string:120";
 	public $version = "string:120";
 	public $dtstart = "datetime";
+	public $device = "string:120";
+	public $device_type = "string:120";
 	public $dtend = "datetime";
 	public $keeptime = "int";
 	public $way = "int";	

@@ -3,69 +3,51 @@
 namespace Gini\Controller\CGI\AJAX;
 
 class Summary extends \Gini\Controller\CGI {
-        const WIN_OS = 1;
-        const MAC = 2;
-        const LINUX = 3;
-        const UNIX = 4;
-        const ANDROID = 5;
-        const iOS =  6;
-        const IPAD = 7;
-        const WIN_PHONE = 8;
-        
-        
-        static $OS = [
-            self::WIN_OS => 'Windows',
-            self::MAC => 'Mac',
-            self::LINUX => 'Linux',
-            self::UNIX => 'Unix',
-            self::ANDROID => 'Android',
-            self::iOS => 'iOS',
-            self::IPAD => 'iPad',
-            self::WIN_PHONE => 'Windows Phone',
-        ];
-        const people = 1;
-        const labs = 2;
-        const equipments = 3;
-        const roles = 4;
-        const gismon = 5;
-        const achievements =  6;
-        const nfs_share = 7;
-        const messages = 8;
-        const announces = 9;
-        const billing = 10;
-        const cers = 11;
-        const entrance = 12;
-        const envmon = 13;
-        const orders = 14;
-        const vendor =  15;
-        const eq_charge = 16;
-        const eq_sample = 17;
-        const eq_reserv = 18;
-        const nfs = 19;
-        const wechat = 20;
 
-        static $MODULE = [
-            self::people =>'people',
-            self::labs =>'labs',
-            self::equipments =>'equipments',
-            self::roles =>'roles',
-            self::gismon =>'gismon',
-            self::achievements =>'achievements',
-            self::nfs_share =>'nfs_share',
-            self::messages =>'messages',
-            self::announces =>'announces',
-            self::billing =>'billing',
-            self::cers =>'cers',
-            self::entrance =>'entrance',
-            self::envmon =>'envmon',
-            self::orders =>'orders',
-            self::vendor =>'vendor',
-            self::eq_charge =>'eq_charge',
-            self::eq_sample =>'eq_sample',
-            self::eq_reserv =>'eq_reserv',
-            self::nfs =>'nfs',
-            self::wechat =>'wechat'
-        ];
+    const PEOPLE = 'people';
+    const LABS = 'labs';
+    const EQUIPMENTS = 'equipments';
+    const ROLES = 'roles';
+    const GISMON = 'gismon';
+    const ACHIEVEMENTS =  'achievements';
+    const NFS_SHARE = 'nfs_share';
+    const MESSAGES = 'messages';
+    const ANNOUNCES = 'announces';
+    const BILLING = 'billing';
+    const CERS = 'cers';
+    const ENTRANCE = 'entrance';
+    const ENVMON = 'envmon';
+    const ORDERS = 'orders';
+    const VENDOR =  'vendor';
+    const EQ_CHARGE = 'eq_charge';
+    const EQ_SAMPLE = 'eq_sample';
+    const EQ_RESERV = 'eq_reserv';
+    const NFS = 'nfs';
+    const WECHAT = 'wechat';
+
+    static $MODULE = [
+        self::PEOPLE => '用户模块',
+        self::LABS => '课题组',
+        self::EQUIPMENTS => '仪器模块',
+        self::ROLES => '权限管理',
+        self::GISMON => '地理监控',
+        self::ACHIEVEMENTS =>'成果监控',
+        self::NFS_SHARE =>'文件系统',
+        self::MESSAGES =>'消息中心',
+        self::ANNOUNCES =>'系统公告',
+        self::BILLING =>'billing',
+        self::CERS =>'CERS',
+        self::ENTRANCE =>'门禁管理',
+        self::ENVMON =>'环境监测',
+        self::ORDERS =>'orders',
+        self::VENDOR =>'vendor',
+        self::EQ_CHARGE =>'仪器收费',
+        self::EQ_SAMPLE =>'送样模块',
+        self::EQ_RESERV =>'预约模块',
+        self::NFS =>'nfs',
+        self::WECHAT =>'微信'
+    ];
+
     public function actionOverview () {
         $days=array();
         for($i=0;$i<=30;$i++ ){
@@ -73,23 +55,25 @@ class Summary extends \Gini\Controller\CGI {
 
         }    
         $db = \Gini\Database::db();
-        $j = 0;
-        foreach (array_reverse($days) as $value) {
+        foreach (array_reverse($days) as $key => $value) {
             $visit_count = $db->value("select count(*) as count from base_point where DATE_FORMAT(dtstart,'%Y-%m-%d') = '".$value."'  group by day(dtstart) ");
             if(is_null($visit_count)) {
                 $visit_count = 0;
             }
-            $data[$j] = [$value, $visit_count];
-            $j++;
+            $data[$key] = [$value, $visit_count];
         }   
+        error_log(print_r($data,true));
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));       
     }
-    public function actionLine2Option() {
-        for($i=1;$i<=20;$i++){
-            $action[$i] = those('base_action')->whose('module')->is(self::$MODULE[$i])->totalCount();
+    public function actionCountModule() {
+        $data = [];
+        foreach (self::$MODULE as $key => $value) {
+            $action = those('base_action')->whose('module')->is($key)->totalCount();
+            $data['module'][] = $value;
+            $data['count'][] = $action;
         }
-    
-        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($action));
+        error_log(print_r($data,true));
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
     }
     public function actionPage($page = 1) {
         $page_info = $this->page($page,10); 
@@ -104,6 +88,7 @@ class Summary extends \Gini\Controller\CGI {
             $lo['browser'] = $value->browser;
             $lo['b_version'] = $value->version;
             $lo['OS_type'] = $value->os;
+            $lo['device_type'] = $value->device_type;
             $lo['dtstart'] = $value->dtstart;
             $los[] = $lo;
             
@@ -111,11 +96,40 @@ class Summary extends \Gini\Controller\CGI {
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($los));
     }
     public function actionBrowserOption() {  
-        for($i=1;$i<=8;$i++){
-            $os[$i] = those('base_point')->whose('os')->is(self::$OS[$i])->totalCount();
+        $total = those('base_point')->totalCount();
+        $db = \Gini\Database::db();
+        $browser = $db->query("select distinct browser from base_point")->rows();
+        $browserarray = [];
+        foreach ($browser as $value) {
+            $value = (array)$value;
+            $browserarray[] = $value['browser'];            
         }
-        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($os));
+        $i = 0;
+        foreach ($browserarray as $value) {
+            $count[$i] = those('base_point')->whose('browser')->is($value)->totalCount();
+            $i++;    
+        }
+        $data['name'] = $browserarray;
+        $data['count'] = $count;    
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
     }
+    public function actionDeviceType() {  
+        $total = those('base_point')->totalCount();
+        $db = \Gini\Database::db();
+        $device_type = $db->query("select distinct device_type from base_point")->rows();
+        $devicearray = [];
+        foreach ($device_type as $value) {
+            $value = (array)$value;
+            $devicearray[] = $value['device_type'];            
+        }
+        foreach ($devicearray as $key => $value) {
+            $count = those('base_point')->whose('device_type')->is($value)->totalCount();
+            $data[$key] = ['value'=>$count, 'name'=>$value];
+        } 
+        error_log(print_r($data,true));
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
+    }
+
     public function actionCountAction() {
         $total = those('base_action')->totalCount();
         $db = \Gini\Database::db();

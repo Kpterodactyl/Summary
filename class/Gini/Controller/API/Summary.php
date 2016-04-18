@@ -32,6 +32,8 @@ class Summary extends \Gini\Controller\API{
 			$point->city = $point_data['city'];
 			$point->browser = $point_data['browser'];
 			$point->version = $point_data['version'];
+			$point->device = $point_data['device'];
+			$point->device_type = $point_data['device_type'];
 			$point->signout_way = $point_data['signout_way'];
 			$point->os = $point_data['OS_type'];
 			$point->dtstart = date("Y-m-d H:i:s",$point_data['dtstart']);

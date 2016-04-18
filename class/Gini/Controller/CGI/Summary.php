@@ -7,8 +7,8 @@ class Summary extends \Gini\Controller\CGI\Layout {
 	const AUTO = 1;    //自动登出
 
 	static $WAY = [
-		self::MANUAL => '手动登出',
-		self::AUTO => '自动登出',
+		self::MANUAL => '手动登出', 
+		self::AUTO => '自动登出', 
 	]; 
 	public function  __index($page_id=1) {
 		$db = \Gini\Database::db();
@@ -81,8 +81,29 @@ class Summary extends \Gini\Controller\CGI\Layout {
         $student_scale =  round($student_s*100).'%';
         $teacher_scale = round($teacher_s*100).'%';
         $other_scale = round($other_s*100).'%';
-        
-		$data = array($stu_num,$tec_num,$else_num);
+
+        //登出方式
+        $auto_num = those('base_point')->whose('way')->is(0)->totalCount();	
+		$manual_num = those('base_point')->whose('way')->is(1)->totalCount();
+
+        $auto_s =  round($auto_num/$login_count,2);
+        $manual_s = round($manual_num/$login_count,2);
+     
+        $auto_scale =  round($auto_s*100).'%';
+        $manual_scale = round($manual_s*100).'%';
+        //登录设备
+        $desktop_num = those('base_point')->whose('device')->is("Desktop")->totalCount();	
+		$mobile_num = those('base_point')->whose('device')->is("Mobile")->totalCount();
+		$robot_num = those('base_point')->whose('device')->is("Robot")->totalCount();
+
+        $desktop_s =  round($desktop_num/$login_count,2);
+        $mobile_s = round($mobile_num/$login_count,2);
+        $robot_s = round($robot_num/$login_count,2);
+     
+        $desktop_scale =  round($desktop_s*100).'%';
+        $mobile_scale = round($mobile_s*100).'%';
+        $robot_scale =round($robot_s*100).'%';
+       
         $page1 = $this->page($page_id,10,$login_count); 
 
         $this->view->body = V('index', array(
@@ -104,6 +125,16 @@ class Summary extends \Gini\Controller\CGI\Layout {
         	'student_scale' =>$student_scale,
         	'teacher_scale' =>$teacher_scale,
         	'other_scale' =>$other_scale,
+        	'desktop_num' =>$desktop_num,
+        	'mobile_num' =>$mobile_num,
+        	'robot_num' =>$robot_num,
+        	'desktop_scale' =>$desktop_scale,
+        	'mobile_scale' =>$mobile_scale,
+        	'robot_scale' =>$robot_scale,
+        	'auto_num' =>$auto_num,
+        	'manual_num' =>$manual_num,       	
+        	'auto_scale' =>$auto_scale,
+        	'manual_scale' =>$manual_scale,
         	'total_page' => $page1['total_page'],
         	'login' => $logins,
         	'logout' => $logouts

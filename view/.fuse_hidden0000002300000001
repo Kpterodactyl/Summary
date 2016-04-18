@@ -26,7 +26,7 @@
 		<div class="row" style="margin-top:10px;">
 			<div class="col-xs-2">
 				<ul id="myNav">
-					<li class="active"><a href="/Summary/#loginpart"><?php echo H(T("访问信息概况"))?></a></li>
+					<li class="active"><a href="/Summary/#loginpart"><i class="fa fa-area-chart" aria-hidden="true"></i><?php echo H(T("访问信息概况"))?></a></li>
 		        	<li><a href="/Summary/#section-2"><?php echo H(T("访客属性"))?></a></li>
 		        	<li><a href="/Summary/#section-3"><?php echo H(T("访客身份"))?></a></li>
 	                <li><a href="/Summary/#section-4"><?php echo H(T("操作系统统计"))?></a></li>
@@ -37,7 +37,7 @@
 			</div>
 	    	<div class="col-xs-10">
 	        	<div id="loginpart">
-	        	<h3><b><?php echo H(T("访问信息概况"))?></b></h3>
+	        	<h3><b><i class="fa fa-area-chart" aria-hidden="true"></i><?php echo H(T("访问信息概况"))?></b></h3>
 	            	<table class="table">
 						<tr style="background-color:  #CCEEFF;font: '微软雅黑';">
 							<th></th>
@@ -112,7 +112,7 @@
 							</nav>
 						</div>
 			    </div>
-			    <div id="section-3">
+			    <div id="section-3" style="margin-top:30px; margin-bottom:30px;">
 	        	<h3><b><i class="icon-user"></i><?php echo H(T("访客身份"))?></b></h3>
 	            	<table class="table">
 						<tr style="background-color:  #CCEEFF;font: '微软雅黑';">
@@ -291,7 +291,7 @@ require(['main'], function($) {
 				    data = JSON.parse(result);
 			    	browserPie.setOption({
 				        title: {
-				            text: '用户各浏览器数量统计'
+				            text: '用户各操作系统数量统计'
 				        },
 				        tooltip: {},
 				        legend: {
@@ -371,7 +371,7 @@ require(['main'], function($) {
 		        				trigger: 'axis'
 		    				},
 		    				legend: {
-		        				data:['今天','前30天同一时间']
+		        				data:['今天','上周同一时间']
 		    				},
 		    				toolbox: {
 		        				show : true,
