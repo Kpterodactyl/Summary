@@ -48,23 +48,6 @@ class Summary extends \Gini\Controller\CGI {
         self::WECHAT =>'微信'
     ];
 
-    public function actionOverview () {
-        $days=array();
-        for($i=0;$i<=30;$i++ ){
-        $days[]=date("Y-m-d",strtotime('-'.$i.'day'));
-
-        }    
-        $db = \Gini\Database::db();
-        foreach (array_reverse($days) as $key => $value) {
-            $visit_count = $db->value("select count(*) as count from base_point where DATE_FORMAT(dtstart,'%Y-%m-%d') = '".$value."'  group by day(dtstart) ");
-            if(is_null($visit_count)) {
-                $visit_count = 0;
-            }
-            $data[$key] = [$value, $visit_count];
-        }   
-        error_log(print_r($data,true));
-        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));       
-    }
     public function actionCountModule() {
         $data = [];
         foreach (self::$MODULE as $key => $value) {
@@ -72,8 +55,33 @@ class Summary extends \Gini\Controller\CGI {
             $data['module'][] = $value;
             $data['count'][] = $action;
         }
-        error_log(print_r($data,true));
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
+    }
+    public function actionSearch () {
+        $form = $this->form();
+        $dtstart = $form['startpicker'];
+        $dtend = $form['endpicker'];
+
+        if(is_null($dtstart)||is_null($dtend)){
+            $days=array();
+            for($i=0;$i<=30;$i++ ){
+            $days[]=date("Y-m-d",strtotime('-'.$i.'day'));
+            }    
+            $db = \Gini\Database::db();
+            foreach (array_reverse($days) as $key => $value) {
+                $visit_count = $db->value("select count(*) as count from base_point where DATE_FORMAT(dtstart,'%Y-%m-%d') = '".$value."'  group by day(dtstart) ");
+                if(is_null($visit_count)) {
+                    $visit_count = 0;
+                }
+                $result[$key] = [$value, $visit_count];
+            }
+        }else{
+            $db = \Gini\Database::db();
+            $result = $db->query("select DATE_FORMAT(dtstart,'%Y-%m-%d') as day ,count(*) as count from base_point where DATE_FORMAT(dtstart,'%Y-%m-%d %H:%M') between '".$dtstart."' and '".$dtend."' group by day(dtstart) ")->rows();
+          
+        }
+        
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($result));           
     }
     public function actionPage($page = 1) {
         $page_info = $this->page($page,10); 
@@ -126,7 +134,6 @@ class Summary extends \Gini\Controller\CGI {
             $count = those('base_point')->whose('device_type')->is($value)->totalCount();
             $data[$key] = ['value'=>$count, 'name'=>$value];
         } 
-        error_log(print_r($data,true));
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
     }
 
@@ -167,3 +174,8 @@ class Summary extends \Gini\Controller\CGI {
     }
 
 }
+
+
+
+
+
