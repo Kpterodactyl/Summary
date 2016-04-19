@@ -16,13 +16,13 @@
 .menu {
     text-align: left;
 }
-#menu ul {
+.menu ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     color: #FFFFFF;
 }
-#menu {
+.menu {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -31,30 +31,34 @@
     color: #FFFFFF;
 
 }
-#menu li  .active a {
+.menu > li.active > a,
+.menu > .active > a:hover {
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     position: relative;
     display: block;
-    padding: 13px 20px;
-    color: #fff;
+    padding: 18px 20px;
+    margin-left: -8px;
+    margin-right: -15px;
+    color: #052963;
     white-space: nowrap;
     z-index: 2;
-    background-color: #021F4E;
     font-size: 0.9em;
     font-family: 'Roboto', sans-serif;
-    border: none;
-    border-left: 4px solid #021F4E;
-}
-#menu li a {
+    border-right: 6px solid #021F4E;
+    background: #fff;
+    }
+.menu > li > a {
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     position: relative;
     display: block;
-    padding: 13px 20px;
+    padding: 18px 20px;
     color: #fff;
     white-space: nowrap;
     z-index: 2;
+    margin-left: -8px;
+    margin-right: -15px;
     background-color: #052963;
     font-size: 0.9em;
     font-family: 'Roboto', sans-serif;

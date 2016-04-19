@@ -15,6 +15,8 @@ class base_point extends Object
 	public $city = "string:120";
 	public $sid = "string:120";
 	public $os = "string:120";
+	public $device = "string:120";
+	public $device_type = "string:120";
 	public $browser = "string:120";
 	public $version = "string:120";
 	public $dtstart = "datetime";

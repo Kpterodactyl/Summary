@@ -10,6 +10,7 @@ class Summary extends \Gini\Controller\CGI\Layout {
 		self::MANUAL => '手动登出',
 		self::AUTO => '自动登出',
 	]; 
+
 	public function  __index($page_id=1) {
 		$db = \Gini\Database::db();
 		$login_count = those('base_point')->totalCount();
@@ -56,19 +57,28 @@ class Summary extends \Gini\Controller\CGI\Layout {
 			$login->dtstart = date("Y-m-d H:i:s",$value['dtstart']);
 			$logins[] = $login;
 		}
-        //登出方式统计
+        //退出方式统计
 		for($i=0;$i<=1;$i++){
 			$logout = array();
 			$logout['name'] = Summary::$WAY[$i];
 			$logout['times'] = those('base_point')->whose('way')->is($i)->totalCount();
 			$logout['percentage'] = round(($logout['times']/$login_count)*100).'%';
-			$logout['time'] = gmstrftime("%M:%S",$this->accessdurationByWay($i));
-			if ($logout['time'] == 0) {
-				$logout['time'] = "--";
-			}
-		
 			$logouts[] = $logout;
 		}
+		//设备使用习惯统计
+        $desktop_num = those('base_point')->whose('device')->is('Mobile')->totalCount();	
+		$mobile_num = those('base_point')->whose('device')->is('Desktop')->totalCount();
+		$robot_num = those('base_point')->whose('device')->is('Robot')->totalCount();
+		error_log($desktop_num);
+        
+        $desktop_s =  round($desktop_num/$login_count,2);
+        $mobile_s = round($mobile_num/$login_count,2);
+        $robot_s = round($robot_num/$login_count,2);
+       
+        $desktop_scale =  round($desktop_s*100).'%';
+        $mobile_scale = round($mobile_s*100).'%';
+        $robot_scale = round($robot_s*100).'%';
+
 		//用户身份
 		$student_num = those('base_point')->whose('member_type')->isBetween(0,10)->totalCount();	
 		$teacher_num = those('base_point')->whose('member_type')->isBetween(10,20)->totalCount();
@@ -84,7 +94,7 @@ class Summary extends \Gini\Controller\CGI\Layout {
         
 		$data = array($stu_num,$tec_num,$else_num);
         $page1 = $this->page($page_id,10,$login_count); 
-
+      
         $this->view->body = V('index', array(
         	'today_visit'=>$today_visit, 
         	'yday_visit' => $yday_visit,
@@ -104,6 +114,14 @@ class Summary extends \Gini\Controller\CGI\Layout {
         	'student_scale' =>$student_scale,
         	'teacher_scale' =>$teacher_scale,
         	'other_scale' =>$other_scale,
+
+        	'desktop_num' =>$desktop_num,
+        	'mobile_num' =>$mobile_num,
+        	'robot_num' =>$robot_num,
+
+        	'desktop_scale' =>$desktop_scale,
+        	'mobile_scale' =>$mobile_scale,
+        	'robot_scale' =>$robot_scale,
         	'total_page' => $page1['total_page'],
         	'login' => $logins,
         	'logout' => $logouts
