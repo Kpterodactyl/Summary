@@ -61,8 +61,6 @@ class Summary extends \Gini\Controller\CGI {
         $form = $this->form();
         $dtstart = $form['startpicker'];
         $dtend = $form['endpicker'];
-        //error_log($dtstart);
-        //error_log($dtend);
 
         if(is_null($dtstart)||is_null($dtend)){
             $days=array();
@@ -138,9 +136,25 @@ class Summary extends \Gini\Controller\CGI {
         } 
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
     }
+    public function actionMapVisit() {  
+        
+        $db = \Gini\Database::db();
+        $city = $db->query("select distinct city from base_point")->rows();
+        $cityarray = [];
+        foreach ($city as $value) {
+            $value = (array)$value;
+            $cityarray[] = $value['city'];            
+        }
+        foreach ($cityarray as $key => $value) {
+            $count = those('base_point')->whose('city')->is($value)->totalCount();
+            $data[$key] = ['value'=>$count, 'name'=>$value];
+        } 
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
+    }
+
 
     public function actionCountAction() {
-        $total = those('base_action')->totalCount();
+        
         $db = \Gini\Database::db();
         $action = $db->query("select distinct action from base_action")->rows();
         $actionarray = [];
