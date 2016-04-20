@@ -26,21 +26,21 @@ class Summary extends \Gini\Controller\CGI {
     const WECHAT = 'wechat';
 
     static $MODULE = [
-        self::PEOPLE => '用户模块',
+        self::PEOPLE => '成员目录',
         self::LABS => '课题组',
-        self::EQUIPMENTS => '仪器模块',
+        self::EQUIPMENTS => '仪器目录',
         self::ROLES => '权限管理',
         self::GISMON => '地理监控',
-        self::ACHIEVEMENTS =>'成果监控',
+        self::ACHIEVEMENTS =>'成果管理',
         self::NFS_SHARE =>'文件系统',
         self::MESSAGES =>'消息中心',
         self::ANNOUNCES =>'系统公告',
-        self::BILLING =>'billing',
+        self::BILLING =>'财务中心',
         self::CERS =>'CERS',
         self::ENTRANCE =>'门禁管理',
         self::ENVMON =>'环境监测',
-        self::ORDERS =>'orders',
-        self::VENDOR =>'vendor',
+        self::ORDERS =>'订单管理',
+        self::VENDOR =>'供应商管理',
         self::EQ_CHARGE =>'仪器收费',
         self::EQ_SAMPLE =>'送样模块',
         self::EQ_RESERV =>'预约模块',
@@ -55,6 +55,25 @@ class Summary extends \Gini\Controller\CGI {
             $data['module'][] = $value;
             $data['count'][] = $action;
         }
+        return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
+    }
+    public function actionSearchAction() {
+        $form = $this->form();
+        $select_module = $form['module'];  
+        $db = \Gini\Database::db();
+        $action = $db->query("select distinct action from base_action where module ='".$select_module."' group by action")->rows();
+        $actionarray = [];
+        foreach ($action as $value) {
+        $value = (array)$value;
+        $actionarray[] = $value['action'];            
+        }
+        
+        foreach ($actionarray as $key=>$value) {
+            $count[$key] = those('base_action')->whose('action')->is($value)->whose('module')->is($select_module)->totalCount();
+            $count[$key] = $db->value("select count(action) FROM base_action where module ='".$select_module."' and action='".$value."' ");   
+        }
+        $data['name'] = $actionarray;
+        $data['count'] = $count; 
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($data));
     }
     public function actionSearch () {
@@ -83,6 +102,7 @@ class Summary extends \Gini\Controller\CGI {
         
         return \Gini\IoC::construct('\Gini\CGI\Response\JSON', json_encode($result));           
     }
+
     public function actionPage($page = 1) {
         $page_info = $this->page($page,10); 
         $login_info = those('base_point')->orderBy('dtstart','DESC')->limit($page_info['start'],$page_info['end']);

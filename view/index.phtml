@@ -230,9 +230,52 @@
 					<h3><b><i class="icon-dashboard"></i><?php echo H(T("模块访问分析"))?></b></h3>
 		                <div id="line2" style="height:400px"></div><hr>
 					</div>
-					 <div id="section-9">
-					<h3><b><i class="icon-bar-chart"></i><?php echo H(T("访问行为分析"))?></b></h3>
-		                <div id="line3" style="height:400px"></div><hr>
+					<div id="section-9">
+					<h3><b><?php echo H(T("访问行为分析"))?></b></h3>
+						<div class="btn-group select-module">
+							 <div class="btn-group">
+							    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+							    <?php echo H(T("常规"))?> 
+							        <span class="caret"></span>
+							    </button>
+							    <ul class="dropdown-menu">
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="people"> <?php echo H(T("成员目录"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="labs"><?php echo H(T("课题组"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="equipments"> <?php echo H(T("仪器目录"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="roles"><?php echo H(T("权限管理"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="calendars"><?php echo H(T("日历模块"))?></a></li>
+
+							    </ul>
+							</div>
+	                        <div class="btn-group">
+							    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+							    <?php echo H(T("管理"))?> 
+							        <span class="caret"></span>
+							    </button>
+							    <ul class="dropdown-menu">
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="gismon"> <?php echo H(T("地理监控"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="achievements"><?php echo H(T("成果管理"))?></a></li>
+							    </ul>
+							</div>
+							<div class="btn-group">
+							    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+							    <?php echo H(T("其他"))?> 
+							        <span class="caret"></span>
+							    </button>
+							    <ul class="dropdown-menu">
+								    <li><a class="moduleselecter" href="/Summary/#section-9" data-module="nfs_share"> <?php echo H(T("文件系统"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="messages"><?php echo H(T("消息中心"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="announces"> <?php echo H(T("系统公告"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="billing"><?php echo H(T("财务中心"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="cers"> <?php echo H(T("CERS"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="entrance"><?php echo H(T("门禁管理"))?></a></li>
+						            <li><a class="moduleselecter" href="/Summary/#section-9" data-module="envmon"> <?php echo H(T("环境监控"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="orders"><?php echo H(T("订单管理"))?></a></li>
+							        <li><a class="moduleselecter" href="/Summary/#section-9" data-module="vendor"><?php echo H(T("供应商管理"))?></a></li>
+							    </ul>
+							</div>
+						</div>
+		                <div id="line3" style="height:400px;padding-top:5px;padding-bottom:5px;"></div><hr>
 					</div>
 		        </div>
 		    </div>
@@ -296,6 +339,7 @@ require(['main'],function($){
 				}
 			})
 			$('select').click();
+			$('moduleselecter').click();
 			$('.page').click(function(){
 
 				var page = $(this).text();
@@ -329,14 +373,14 @@ require(['main'],function($){
 </script>
 <script type="text/javascript">
 require(['main'], function($) {
-	require(['echarts.min'], function (echarts) {
+		require(['echarts.min'], function (echarts) {
 
 		//line是关于根据日期搜索显示访问量的
 		var SearchChart = echarts.init(document.getElementById('line'));
 		//pie3 charts2是关于用户操作系统的
 		var countBrowserChart = echarts.init(document.getElementById('pie3'));
 		var browserPie = echarts.init(document.getElementById('charts2'));
-		var visitMap
+		var visitMap;
 		//map 是关于各地区访问情况的
 		$.get('../assets/json/china.json', function (chinaJson) {
 			echarts.registerMap('china', chinaJson);
@@ -579,7 +623,6 @@ require(['main'], function($) {
 				    '大庆':[125.03,46.58]
 				};			   
 				    data = JSON.parse(result);
-				    console.log(data);
 				    var convertData = function (data) {
 				    var res = [];
 				    for (var i = 0; i < data.length; i++) {
@@ -816,7 +859,6 @@ require(['main'], function($) {
 			    		endpicker
 			    	},
 			    	success:function(result){
-			    		console.log(data)
 			    	data = JSON.parse(result);
 			    	var visit_time = [];
 		    		var visit_count = [];
@@ -884,6 +926,86 @@ require(['main'], function($) {
 				})
 			}
 			    	
+			    })
+		    })
+            //根据选择模块显示对应操作数量
+		    $('.moduleselecter').click(function () {
+		    	//console.log($(this).data('module'))
+		    	//$('.moduleselecter').data('module');
+			    $.ajax({
+			    	type:"POST",
+			    	url: 'ajax/summary/searchaction/',
+			    	data:{
+			    		module: $(this).data('module')
+			    	},
+			    	success:function(result){
+
+			    	data = JSON.parse(result);
+			    		countActionChart.setOption({
+						    title : {
+		        				text: '用户行为概况',
+		        				
+		    				},
+		    				tooltip : {
+		        				trigger: 'axis'
+		    				},
+		    				toolbox: {
+		        				show : true,
+		        				feature : {
+		            				mark : {show: true},
+		            				dataView : {show: true, readOnly: false},
+		            				magicType : {show: true, type: ['line', 'bar']},
+		            				restore : {show: true},
+		            				saveAsImage : {show: true}
+		        				}
+		    				},
+		    				calculable : true,
+		    				xAxis : [
+		        			{
+		            			type : 'category',
+		            			axisLabel: {
+							    rotate: 20,
+								show:true,
+								height:80,
+								interval: 0,
+								},
+		            			boundaryGap : false,
+		            			data : data['name'],
+		        			}
+		    				 ],
+		    				grid: { // 控制图的大小，调整下面这些值就可以，
+             					x: 40,
+            					x2: 100,
+             					y2: 130,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+         					},
+		   					yAxis : [
+		        			{
+		            			type : 'value',
+		            			axisLabel : {
+		                			formatter: '{value}'
+		            			}
+		        			}
+		    			],
+		    			series : [
+			        		{
+			            		name:'本操作执行次数',
+			            		type:'line',
+			            		data: data['count'],
+			            		markPoint : {
+			                	data : [
+			                    	{type : 'max', name: '最大值'},
+			                    	{type : 'min', name: '最小值'}
+			                	]
+			            	},
+			            	markLine : {
+			                	data : [
+			                    	{type : 'average', name: '平均值'}
+			                	]
+			            	}
+			        		}
+			    		]
+					});
+				}
 			    })
 		    })
             //访问行为统计	
@@ -961,7 +1083,7 @@ require(['main'], function($) {
 				}
 			
 		    })
-     
+            
             //模块统计折线图
 		    $.ajax({
 		    	type:"POST",
